@@ -91,10 +91,29 @@ boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getIni
 	<aui:form action="<%= portletURL.toString() %>" method="get" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 
-		<%
-		request.setAttribute("view_entries_search_container.jsp-searchContainer", entriesSearchContainer);
-		%>
+		<c:if test="<%= portletTitleBasedNavigation || (entriesSearchContainer.getTotal() > 0) %>">
 
-		<liferay-util:include page='<%= "/message_boards_admin/view_entries_search_container.jsp" %>' servletContext="<%= application %>" />
+			<%
+			request.setAttribute("view_entries_search_container.jsp-searchContainer", entriesSearchContainer);
+			%>
+
+			<liferay-util:include page='<%= "/message_boards_admin/view_entries_search_container.jsp" %>' servletContext="<%= application %>" />
+		</c:if>
+
+		<c:if test="<%= !portletTitleBasedNavigation %>">
+
+			<%
+			SearchContainer threadsSearchContainer = new SearchContainer(renderRequest, null, null, "cur2", 0, SearchContainer.DEFAULT_DELTA, portletURL, null, "there-are-no-threads-nor-categories");
+
+			threadsSearchContainer.setId("mbThreads");
+
+			threadsSearchContainer.setTotal(MBThreadServiceUtil.getThreadsCount(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED));
+			threadsSearchContainer.setResults(MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED, threadsSearchContainer.getStart(), threadsSearchContainer.getEnd()));
+
+			request.setAttribute("view_entries_search_container.jsp-searchContainer", threadsSearchContainer);
+			%>
+
+			<liferay-util:include page='<%= "/message_boards_admin/view_entries_search_container.jsp" %>' servletContext="<%= application %>" />
+		</c:if>
 	</aui:form>
 </div>
