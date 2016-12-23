@@ -14,8 +14,24 @@
  */
 --%>
 
+<%@ include file="/message_boards/init.jsp" %>
+
+<%
+SearchContainer viewEntriesSearchContainer = (SearchContainer)request.getAttribute("view_entries_search_container.jsp-searchContainer");
+
+long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
+
+PortletURL portletURL = (PortletURL)request.getAttribute("view.jsp-portletURL");
+
+if (groupThreadsUserId > 0) {
+	portletURL.setParameter("groupThreadsUserId", String.valueOf(groupThreadsUserId));
+}
+
+boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
+%>
+
 <liferay-ui:search-container
-	searchContainer="<%= entriesSearchContainer %>"
+	searchContainer="<%= viewEntriesSearchContainer %>"
 >
 	<liferay-ui:search-container-row
 		className="Object"
@@ -211,3 +227,7 @@
 
 	<liferay-ui:search-iterator displayStyle='<%= GetterUtil.getString(request.getAttribute("view.jsp-displayStyle")) %>' markupView="lexicon" resultRowSplitter="<%= new MBResultRowSplitter() %>" />
 </liferay-ui:search-container>
+
+<%!
+private static Log _log = LogFactoryUtil.getLog("com_liferay_message_boards_web.message_boards_admin.view_entries_jsp");
+%>

@@ -91,6 +91,10 @@ boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getIni
 	<aui:form action="<%= portletURL.toString() %>" method="get" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 
+		<%
+		request.setAttribute("view_entries_search_container.jsp-searchContainer", entriesSearchContainer);
+		%>
+
 		<liferay-util:include page='<%= "/message_boards_admin/view_entries_search_container.jsp" %>' servletContext="<%= application %>" />
 	</aui:form>
 </div>
